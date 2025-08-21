@@ -8,10 +8,11 @@ const ContactSection = () => {
     email: '',
     message: ''
   });
-  const [errors, setErrors] = useState({});
+  type Errors = { name?: string; email?: string; message?: string };
+  const [errors, setErrors] = useState<Errors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const validate = () => {
-    const newErrors = {};
+  const newErrors: Errors = {};
     if (!formData.name.trim()) {
       newErrors.name = 'El nombre es requerido';
     }
@@ -26,17 +27,14 @@ const ContactSection = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const handleChange = e => {
-    const {
-      name,
-      value
-    } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value
     });
   };
-  const handleSubmit = e => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validate()) {
       setIsSubmitting(true);
@@ -90,26 +88,28 @@ const ContactSection = () => {
         base: 1,
         md: 2
       }} spacing={10}>
-          <VStack as="form" spacing={6} align="stretch" onSubmit={handleSubmit} bg="white" p={8} borderRadius="lg" boxShadow="sm">
-            <FormControl isInvalid={errors.name}>
-              <FormLabel htmlFor="name">Nombre</FormLabel>
-              <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Tu nombre" focusBorderColor="accent.500" />
+          <form onSubmit={handleSubmit}>
+            <VStack spacing={6} align="stretch" bg="white" p={8} borderRadius="lg" boxShadow="sm">
+            <FormControl isInvalid={!!errors.name}>
+              <FormLabel htmlFor="name" color={'gray.600'}>Nombre</FormLabel>
+              <Input id="name" name="name" value={formData.name} onChange={handleChange} borderColor={'gray.300'} placeholder="Tu nombre" focusBorderColor="accent.500" _hover={{ borderColor: 'gray.500' }} _placeholder={{ color: 'gray.500' }} />
               <FormErrorMessage>{errors.name}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={errors.email}>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="tu.email@ejemplo.com" focusBorderColor="accent.500" />
+            <FormControl isInvalid={!!errors.email}>
+              <FormLabel htmlFor="email" color={'gray.600'}>Email</FormLabel>
+              <Input id="email" name="email" type="email" value={formData.email} borderColor={'gray.300'} onChange={handleChange} placeholder="tu.email@ejemplo.com" focusBorderColor="accent.500" _hover={{ borderColor: 'gray.500' }} _placeholder={{ color: 'gray.500' }} />
               <FormErrorMessage>{errors.email}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={errors.message}>
-              <FormLabel htmlFor="message">Mensaje</FormLabel>
-              <Textarea id="message" name="message" value={formData.message} onChange={handleChange} placeholder="¿En qué puedo ayudarte?" focusBorderColor="accent.500" rows={5} />
+            <FormControl isInvalid={!!errors.message}>
+              <FormLabel htmlFor="message" color={'gray.600'}>Mensaje</FormLabel>
+              <Textarea id="message" name="message" borderColor={'gray.300'} value={formData.message} onChange={handleChange} placeholder="¿En qué puedo ayudarte?" focusBorderColor="accent.500" rows={5} _hover={{ borderColor: 'gray.500' }} _placeholder={{ color: 'gray.500' }} />
               <FormErrorMessage>{errors.message}</FormErrorMessage>
             </FormControl>
-            <Button type="submit" colorScheme="teal" isLoading={isSubmitting} loadingText="Enviando..." size="lg" width="100%">
-              Enviar mensaje
-            </Button>
-          </VStack>
+              <Button type="submit" colorScheme="teal" isLoading={isSubmitting} loadingText="Enviando..." size="lg" width="100%">
+                Enviar mensaje
+              </Button>
+            </VStack>
+          </form>
           <VStack spacing={8} align="flex-start" justify="center">
             <VStack spacing={6} align="flex-start" width="100%">
               <Heading as="h3" size="md" color={"gray.600"}>
